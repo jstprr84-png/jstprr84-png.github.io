@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credits - PENUMBRA EYE LIBRARY</title>
+    <style>
+        :root {
+            --bg-color: #eff3ef;        
+            --container-bg: #fcfafd;    
+            --border-color: #808080;    
+            --text-color: #262626;      
+            --accent-color: #003366;    
+            --font-family: 'Courier New', Courier, monospace; 
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .site-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            border: 2px solid var(--border-color);
+            background-color: var(--container-bg);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            color: var(--accent-color);
+            text-shadow: 0 0 5px rgba(0, 51, 102, 0.1);
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
+        }
+
+        .sidebar {
+            background-color: var(--container-bg);
+            border: 3px double var(--border-color); 
+            padding: 20px;
+            box-sizing: border-box;
+            height: fit-content;
+        }
+
+        .sidebar h3 {
+            margin-top: 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            color: var(--accent-color);
+        }
+
+        .sidebar ul { list-style-type: none; padding: 0; margin: 0; }
+        .sidebar li { margin-bottom: 12px; }
+
+        .content-area {
+            background-color: var(--container-bg);
+            border: 2px solid var(--border-color);
+            padding: 30px;
+        }
+
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        a:hover {
+            text-decoration: underline;
+            text-shadow: 0 0 8px rgba(0, 51, 102, 0.2);
+        }
+
+        .story-image-container {
+            text-align: center;
+            margin: 25px 0;
+            padding: 10px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .story-image {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid var(--border-color);
+            display: block;
+            margin: 0 auto 10px auto;
+        }
+
+        .image-caption {
+            font-size: 0.85rem;
+            font-style: italic;
+            color: #555;
+            margin: 0;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            font-size: 0.8rem;
+            border-top: 1px dashed var(--border-color);
+            color: #888888;
+        }
+
+        @media (max-width: 768px) {
+            .main-layout { grid-template-columns: 1fr; }
+            body { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="site-wrapper">
+        <header>
+            <h1>> PENUMBRA EYE LIBRARY</h1>
+            <p>WELCOME TO AN ARCHIVE OF VARIOUS STORIES, HOPE YOU'LL ENJOY WHAT YOU FIND HERE</p>
+        </header>
+
+        <div class="main-layout">
+            <aside class="sidebar">
+                <h3>Навигация</h3>
+                <ul>
+                    <li><a href="index.html">🏠 MAIN PAGE</a></li>
+                    <li><a href="stories.html">📜 LIST OF STORIES</a></li>
+                    <li><a href="credits.html">👥 CREDITS</a></li>
+                    <li><a href="#">THE MAP</a></li>
+                </ul>
+                <h3>Управление</h3>
+                <ul>
+                    <li><a href="#">⚙️ CODE EDITOR</a></li>
+                    <li><a href="#">📝 PAGE EDITOR</a></li>
+                    <li><a href="#">💬 DISCUSSIONS</a></li>
+                </ul>
+            </aside>
+
+            <main class="content-area">
+                <h2>👥 Участники проекта (Credits)</h2>
+                <p>Ниже представлена архивная фотография создателей и благодарности всем, кто помогал в разработке библиотеки.</p>
+                
+                <div class="story-image-container">
+                    <img src="https://homestuck.com" alt="Комната Джона" class="story-image">
+                    <p class="image-caption">[СНИМОК #04-A]: Фрагмент микросхемы терминала Penumbra.</p>
+                </div>
+
+                <h3>Список авторов:</h3>
+                <ul>
+                    <li><strong>Автор идеи:</strong> Вы</li>
+                    <li><strong>Дизайн интерфейса:</strong> Ретро-стиль MSPFA / Wikidot</li>
+                </ul>
+            </main>
+        </div>
+        <footer>
+            <p>&copy; 2026 PENUMBRA EYE LIBRARY. Работает на GitHub Pages.</p>
+        </footer>
+    </div>
+</body>
+</html>
