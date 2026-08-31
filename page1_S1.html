@@ -3,21 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Credits - PENUMBRA EYE LIBRARY</title>
+    <title>PENUMBRA EYE LIBRARY</title>
     
-    <!-- 1. СНАЧАЛА ПОДКЛЮЧАЕМ БАЗОВЫЙ ДЕФОЛТНЫЙ СТИЛЬ -->
+    <!-- 1. ПОДКЛЮЧАЕМ НАШ ОБЩИЙ СТИЛЬ ПО ДЕФОЛТУ -->
     <link rel="stylesheet" href="style.css">
 
-    <!-- 2. СТРОГО НИЖЕ ЗАДАЕМ СТИЛИ, УНИКАЛЬНЫЕ ДЛЯ ЭТОЙ СТРАНИЦЫ -->
+    <!-- 2. БЛОК ДЛЯ КАСТЕМНЫХ СТИЛЕЙ ЭТОЙ СТРАНИЦЫ -->
     <style>
-        header h1 {
-            /* Возвращаем оригинальную легкую тень текста в шапке */
-            text-shadow: 0 0 5px rgba(0, 51, 102, 0.1);
-        }
-        
-        a:hover {
-            /* Возвращаем оригинальное синее свечение при наведении на ссылки */
-            text-shadow: 0 0 8px rgba(0, 51, 102, 0.2);
+        :root {
+            /* Если захотите сделать эту страницу уникальной (например, темной), 
+               просто раскомментируйте и измените цвета ниже: */
+            /* --bg-color: #1a1a1a; */
+            /* --text-color: #ffffff; */
         }
     </style>
 </head>
@@ -31,9 +28,10 @@
             <p>WELCOME TO AN ARCHIVE OF VARIOUS STORIES, HOPE YOU'LL ENJOY WHAT YOU FIND HERE</p>
         </header>
 
+        <!-- Основная разметка сайта -->
         <div class="main-layout">
             
-            <!-- Левая панель навигации -->
+            <!-- Панель управления слева -->
             <aside class="sidebar">
                 <h3>Навигация</h3>
                 <ul>
@@ -51,32 +49,27 @@
                 </ul>
             </aside>
 
-            <!-- Основной контент -->
+            <!-- Основная страница справа -->
             <main class="content-area">
                 <h2>👥 Участники проекта (Credits)</h2>
                 <p>Ниже представлена архивная фотография создателей и благодарности всем, кто помогал в разработке библиотеки.</p>
                 
                 <!-- Контейнер с картинкой -->
                 <div class="story-image-container">
-                    <img src="https://homestuck.com" alt="Комната Джона" class="story-image">
+                    <img src="https://mspaintadventures.ru/storyfiles/hs2/01588_1.gif" alt="Комната Джона" class="story-image">
                     <p class="image-caption">[СНИМОК #04-A]: Фрагмент микросхемы терминала Penumbra.</p>
                 </div>
-
                 <h3>Список авторов:</h3>
                 <ul>
                     <li><strong>Автор идеи:</strong> Вы</li>
                     <li><strong>Дизайн интерфейса:</strong> Ретро-стиль MSPFA / Wikidot</li>
                 </ul>
             </main>
-
         </div>
-
         <!-- Подвал -->
         <footer>
             <p>&copy; 2026 PENUMBRA EYE LIBRARY. Работает на GitHub Pages.</p>
         </footer>
-
     </div>
-
 </body>
 </html>
