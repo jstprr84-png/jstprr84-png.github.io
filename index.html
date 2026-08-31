@@ -126,21 +126,24 @@
     <!-- Обертка для текста и картинки -->
     <div class="story-row">
         
-        <!-- Левая часть: Текст -->
-        <div class="story-text">
+       <table style="width: 100%; border-collapse: collapse;">
+    <tr>
+        <!-- Левая колонка: Текст -->
+        <td style="vertical-align: top; padding-right: 20px;">
             <h2>WELCOME, STRANGER</h2>
-<p>Это базовая заготовка, имитирующая интерфейсы классических текстовых систем вроде <strong>MSPFA</strong> или старого <strong>Wikidot</strong>.</p>
-<h3>Доступные истории:</h3>
-<ul>
-<li><a href="page1_S1.html">📖 STORY 1</a></li>
-</ul>
-        </div>
+            <p>Это базовая заготовка, имитирующая интерфейсы классических текстовых систем вроде <strong>MSPFA</strong> или старого <strong>Wikidot</strong>.</p>
+        </td>
 
-        <!-- Правая часть: Изображение с глазом -->
-        <div class="story-side-image">
-            <img src="https://i.postimg.cc/zvBVhnHq/5235942365556580788.jpg" alt="Penumbra Eye Logo">
-        </div>
-
+        <!-- Правая колонка: Картинка 200x200 с прозрачным фоном -->
+        <td style="vertical-align: top; width: 200px; text-align: center;">
+            <img src="https://postimg.cc" 
+                 alt="Penumbra Eye Logo" 
+                 width="200" 
+                 height="200" 
+                 style="display: block; filter: invert(1); mix-blend-mode: multiply; object-fit: contain;">
+        </td>
+    </tr>
+</table>
     </div>
 </main>
 
