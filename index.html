@@ -4,35 +4,108 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PENUMBRA EYE LIBRARY</title>
-    
-    <!-- 1. ПОДКЛЮЧАЕМ НАШ ОБЩИЙ СТИЛЬ ПО ДЕФОЛТУ -->
-    <link rel="stylesheet" href="https://ваш_логин.github.io/style.css">
-
-
-    <!-- 2. БЛОК ДЛЯ КАСТЕМНЫХ СТИЛЕЙ ЭТОЙ СТРАНИЦЫ -->
     <style>
         :root {
-            /* Если захотите сделать эту страницу уникальной (например, темной), 
-               просто раскомментируйте и измените цвета ниже: */
-            /* --bg-color: #1a1a1a; */
-            /* --text-color: #ffffff; */
+            --bg-color: #eff3ef;        
+            --container-bg: #fcfafd;    
+            --border-color: #808080;    
+            --text-color: #262626;      
+            --accent-color: #003366;    
+            --font-family: 'Courier New', Courier, monospace; 
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .site-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            border: 2px solid var(--border-color);
+            background-color: var(--container-bg);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            color: var(--accent-color);
+            text-shadow: 0 0 5px rgba(0, 51, 102, 0.1);
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
+        }
+
+        .sidebar {
+            background-color: var(--container-bg);
+            border: 3px double var(--border-color); 
+            padding: 20px;
+            box-sizing: border-box;
+            height: fit-content;
+        }
+
+        .sidebar h3 {
+            margin-top: 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            color: var(--accent-color);
+        }
+
+        .sidebar ul { list-style-type: none; padding: 0; margin: 0; }
+        .sidebar li { margin-bottom: 12px; }
+
+        .content-area {
+            background-color: var(--container-bg);
+            border: 2px solid var(--border-color);
+            padding: 30px;
+        }
+
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        a:hover {
+            text-decoration: underline;
+            text-shadow: 0 0 8px rgba(0, 51, 102, 0.2);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            font-size: 0.8rem;
+            border-top: 1px dashed var(--border-color);
+            color: #888888;
+        }
+
+        @media (max-width: 768px) {
+            .main-layout { grid-template-columns: 1fr; }
+            body { padding: 10px; }
         }
     </style>
 </head>
 <body>
-
     <div class="site-wrapper">
-
-        <!-- Шапка -->
         <header>
             <h1>> PENUMBRA EYE LIBRARY</h1>
             <p>WELCOME TO AN ARCHIVE OF VARIOUS STORIES, HOPE YOU'LL ENJOY WHAT YOU FIND HERE</p>
         </header>
 
-        <!-- Основная разметка сайта -->
         <div class="main-layout">
-            
-            <!-- Панель управления слева -->
             <aside class="sidebar">
                 <h3>Навигация</h3>
                 <ul>
@@ -41,7 +114,6 @@
                     <li><a href="credits.html">👥 CREDITS</a></li>
                     <li><a href="#">THE MAP</a></li>
                 </ul>
-
                 <h3>Управление</h3>
                 <ul>
                     <li><a href="#">⚙️ CODE EDITOR</a></li>
@@ -50,33 +122,18 @@
                 </ul>
             </aside>
 
-            <!-- Основная страница справа -->
             <main class="content-area">
                 <h2>Заголовок основной страницы</h2>
-                <p>Это базовая заготовка, имитирующая интерфейсы классических текстовых систем вроде <strong>MSPFA</strong> или старого <strong>Wikidot</strong>. Панель слева зафиксирована в рамке и служит глобальным меню.</p>
-                
-                <p>Теперь весь дизайн находится в файле <code>style.css</code>. Изменив его один раз, вы обновите внешний вид всех страниц вашего сайта.</p>
-
+                <p>Это базовая заготовка, имитирующая интерфейсы классических текстовых систем вроде <strong>MSPFA</strong> или старого <strong>Wikidot</strong>.</p>
                 <h3>Доступные истории:</h3>
                 <ul>
                     <li><a href="page1_S1.html">📖 STORY 1</a></li>
                 </ul>
-                
-                <h3>Как изменить внешний вид?</h3>
-                <ul>
-                    <li>Чтобы поменять дефолтный стиль всего сайта, редактируйте файл <code>style.css</code> в репозитории.</li>
-                    <li>Чтобы задать кастомный стиль только этой странице, меняйте переменные в блоке <code>&lt;style&gt;</code> вверху этого файла.</li>
-                </ul>
             </main>
-
         </div>
-
-        <!-- Подвал -->
         <footer>
             <p>&copy; 2026 PENUMBRA EYE LIBRARY. Работает на GitHub Pages.</p>
         </footer>
-
     </div>
-
 </body>
 </html>
