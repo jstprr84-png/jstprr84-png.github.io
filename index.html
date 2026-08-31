@@ -4,118 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PENUMBRA EYE LIBRARY</title>
+    
+    <!-- 1. ПОДКЛЮЧАЕМ НАШ ОБЩИЙ СТИЛЬ ПО ДЕФОЛТУ -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- 2. БЛОК ДЛЯ КАСТЕМНЫХ СТИЛЕЙ ЭТОЙ СТРАНИЦЫ -->
     <style>
-        /* --- НАСТРОЙКА ЦВЕТОВ И ШРИФТОВ --- */
         :root {
-            --bg-color: #eff3ef;        /* Цвет фона сайта */
-            --container-bg: #fcfafd;    /* Цвет фона блоков */
-            --border-color: #808080;    /* Цвет рамок */
-            --text-color: #262626;      /* Основной цвет текста */
-            --accent-color: #003366;    /* Цвет ссылок и важных элементов (зеленый неон) */
-            --font-family: 'Courier New', Courier, monospace; /* Кастомный шрифт */
-        }
-
-        /* Общие стили страницы */
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: var(--font-family);
-            margin: 0;
-            padding: 20px;
-            line-height: 1.6;
-        }
-
-        /* Главный контейнер-обертка */
-        .site-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* Шапка сайта */
-        header {
-            text-align: center;
-            border: 2px solid var(--border-color);
-            background-color: var(--container-bg);
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-
-        header h1 {
-            margin: 0;
-            color: var(--accent-color);
-            text-shadow: 0 0 5px rgba(0, 255, 102, 0.3);
-        }
-
-        /* Сетка для разметки: панель слева, контент справа */
-        .main-layout {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 20px;
-        }
-
-        /* Левая панель управления (в рамке) */
-        .sidebar {
-            background-color: var(--container-bg);
-            border: 3px double var(--border-color); /* Двойная ретро-рамка */
-            padding: 20px;
-            box-sizing: border-box;
-            height: fit-content;
-        }
-
-        .sidebar h3 {
-            margin-top: 0;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 8px;
-            color: var(--accent-color);
-        }
-
-        .sidebar ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .sidebar li {
-            margin-bottom: 12px;
-        }
-
-        /* Основной контент справа */
-        .content-area {
-            background-color: var(--container-bg);
-            border: 2px solid var(--border-color);
-            padding: 30px;
-        }
-
-        /* Стилизация ссылок */
-        a {
-            color: var(--accent-color);
-            text-decoration: none;
-            transition: all 0.2s ease;
-        }
-
-        a:hover {
-            text-decoration: underline;
-            text-shadow: 0 0 8px var(--accent-color);
-        }
-
-        /* Подвал */
-        footer {
-            text-align: center;
-            margin-top: 20px;
-            padding: 15px;
-            font-size: 0.8rem;
-            border-top: 1px dashed var(--border-color);
-            color: #888888;
-        }
-
-        /* Адаптивность для мобильных устройств */
-        @media (max-width: 768px) {
-            .main-layout {
-                grid-template-columns: 1fr; /* На смартфонах колонки встанут друг под друга */
-            }
-            body {
-                padding: 10px;
-            }
+            /* Если захотите сделать эту страницу уникальной (например, темной), 
+               просто раскомментируйте и измените цвета ниже: */
+            /* --bg-color: #1a1a1a; */
+            /* --text-color: #ffffff; */
         }
     </style>
 </head>
@@ -136,9 +35,9 @@
             <aside class="sidebar">
                 <h3>Навигация</h3>
                 <ul>
-                    <li><a href="#">🏠 MAIN PAGE</a></li>
-                    <li><a href="#">📜 LIST OF STORIES</a></li>
-                    <li><a href="#">👥 CREDITS</a></li>
+                    <li><a href="index.html">🏠 MAIN PAGE</a></li>
+                    <li><a href="stories.html">📜 LIST OF STORIES</a></li>
+                    <li><a href="credits.html">👥 CREDITS</a></li>
                     <li><a href="#">THE MAP</a></li>
                 </ul>
 
@@ -155,14 +54,17 @@
                 <h2>Заголовок основной страницы</h2>
                 <p>Это базовая заготовка, имитирующая интерфейсы классических текстовых систем вроде <strong>MSPFA</strong> или старого <strong>Wikidot</strong>. Панель слева зафиксирована в рамке и служит глобальным меню.</p>
                 
-                <p>Вы можете легко кастомизировать этот шаблон под себя. Все ключевые цвета, отступы и шрифты вынесены в начало CSS-кода в блок <code>:root</code>.</p>
+                <p>Теперь весь дизайн находится в файле <code>style.css</code>. Изменив его один раз, вы обновите внешний вид всех страниц вашего сайта.</p>
 
-                <li><a href="page1_S1">STORY 1</a></li>
+                <h3>Доступные истории:</h3>
+                <ul>
+                    <li><a href="page1_S1.html">📖 STORY 1</a></li>
+                </ul>
                 
                 <h3>Как изменить внешний вид?</h3>
                 <ul>
-                    <li><strong>Цвет текста и фона:</strong> Измените значения переменных <code>--bg-color</code> и <code>--text-color</code> в верхней части кода.</li>
-                    <li><strong>Шрифт:</strong> Если вы хотите более круглый или стандартный шрифт, замените <code>'Courier New'</code> в переменной <code>--font-family</code> на <code>'Arial'</code>, <code>'Verdana'</code> или подключите внешние шрифты из Google Fonts.</li>
+                    <li>Чтобы поменять дефолтный стиль всего сайта, редактируйте файл <code>style.css</code> в репозитории.</li>
+                    <li>Чтобы задать кастомный стиль только этой странице, меняйте переменные в блоке <code>&lt;style&gt;</code> вверху этого файла.</li>
                 </ul>
             </main>
 
