@@ -1,4 +1,17 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <title>Название вашего сайта</title>
+    
+    <!-- Вставьте строку подключения стилей сюда: -->
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+
+    <h1>Привет, мир!</h1>
+    <p>Это ваш сайт, и теперь к нему применятся стили.</p>
+
+</body>
+</html>
