@@ -4,10 +4,11 @@
     --container-bg: #fcfafd;    /* Цвет фона блоков */
     --border-color: #808080;    /* Цвет рамок */
     --text-color: #262626;      /* Основной цвет текста */
-    --accent-color: #003366;    /* Цвет ссылок */
-    --font-family: 'Courier New', Courier, monospace; 
+    --accent-color: #003366;    /* Цвет ссылок и элементов */
+    --font-family: 'Courier New', Courier, monospace; /* Кастомный шрифт */
 }
 
+/* Общие стили страницы */
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
@@ -17,11 +18,13 @@ body {
     line-height: 1.6;
 }
 
+/* Главный контейнер-обертка */
 .site-wrapper {
     max-width: 1200px;
     margin: 0 auto;
 }
 
+/* Шапка сайта */
 header {
     text-align: center;
     border: 2px solid var(--border-color);
@@ -33,17 +36,20 @@ header {
 header h1 {
     margin: 0;
     color: var(--accent-color);
+    text-shadow: 0 0 5px rgba(0, 51, 102, 0.1);
 }
 
+/* Сетка для разметки: панель слева, контент справа */
 .main-layout {
     display: grid;
     grid-template-columns: 280px 1fr;
     gap: 20px;
 }
 
+/* Левая панель управления */
 .sidebar {
     background-color: var(--container-bg);
-    border: 3px double var(--border-color); 
+    border: 3px double var(--border-color); /* Двойная ретро-рамка */
     padding: 20px;
     box-sizing: border-box;
     height: fit-content;
@@ -56,15 +62,24 @@ header h1 {
     color: var(--accent-color);
 }
 
-.sidebar ul { list-style-type: none; padding: 0; margin: 0; }
-.sidebar li { margin-bottom: 12px; }
+.sidebar ul { 
+    list-style-type: none; 
+    padding: 0; 
+    margin: 0; 
+}
 
+.sidebar li { 
+    margin-bottom: 12px; 
+}
+
+/* Основной контент справа */
 .content-area {
     background-color: var(--container-bg);
     border: 2px solid var(--border-color);
     padding: 30px;
 }
 
+/* Стилизация ссылок */
 a {
     color: var(--accent-color);
     text-decoration: none;
@@ -73,31 +88,39 @@ a {
 
 a:hover {
     text-decoration: underline;
+    text-shadow: 0 0 8px rgba(0, 51, 102, 0.2);
 }
 
-.story-image-container {
+/* --- ТАБЛИЦА КОНТЕНТА (ТЕКСТ СЛЕВА, КАРТИНКА СПРАВА) --- */
+.story-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.story-text-cell {
+    vertical-align: top;
+    padding-right: 20px;
+}
+
+.story-image-cell {
+    vertical-align: top;
+    width: 200px;
     text-align: center;
-    margin: 25px 0;
-    padding: 10px;
-    background-color: var(--bg-color);
-    border: 1px solid var(--border-color);
 }
 
-.story-image {
-    max-width: 100%;
-    height: auto;
-    border: 2px solid var(--border-color);
+/* Настройка изображения глаза 200x200 */
+.story-logo {
     display: block;
-    margin: 0 auto 10px auto;
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+    
+    /* Делает контур глаза темным и убирает белый фон на светлом сайте */
+    filter: invert(1);
+    mix-blend-mode: multiply;
 }
 
-.image-caption {
-    font-size: 0.85rem;
-    font-style: italic;
-    color: #555;
-    margin: 0;
-}
-
+/* Подвал */
 footer {
     text-align: center;
     margin-top: 20px;
@@ -107,7 +130,18 @@ footer {
     color: #888888;
 }
 
+/* Адаптивность для мобильных устройств */
 @media (max-width: 768px) {
-    .main-layout { grid-template-columns: 1fr; }
+    .main-layout { 
+        grid-template-columns: 1fr; 
+    }
+    .story-table, .story-table tr, .story-table td {
+        display: block;
+        width: 100% !important;
+        padding: 0;
+    }
+    .story-image-cell {
+        margin-top: 20px;
+    }
     body { padding: 10px; }
 }
