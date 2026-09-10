@@ -2,16 +2,59 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Название вашего сайта</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PENUMBRA EYE LIBRARY</title>
     
-    <!-- Вставьте строку подключения стилей сюда: -->
+    <!-- ПОДКЛЮЧАЕМ СТИЛЬ ИЗ ВНЕШНЕГО ФАЙЛА -->
     <link rel="stylesheet" href="style.css">
-    
 </head>
 <body>
+    <div class="site-wrapper">
+        <header>
+            <h1>> PENUMBRA EYE LIBRARY</h1>
+            <p>WELCOME TO AN ARCHIVE OF VARIOUS STORIES, HOPE YOU'LL ENJOY WHAT YOU FIND HERE</p>
+        </header>
 
-    <h1>Привет, мир!</h1>
-    <p>Это ваш сайт, и теперь к нему применятся стили.</p>
+        <div class="main-layout">
+            <!-- Левая панель -->
+            <aside class="sidebar">
+                <h3>NAVIGATION</h3>
+                <ul>
+                    <li><a href="index.html">🏠 MAIN PAGE</a></li>
+                    <li><a href="stories.html">📜 LIST OF STORIES</a></li>
+                    <li><a href="credits.html">👥 CREDITS</a></li>
+                    <li><a href="#">THE MAP</a></li>
+                </ul>
+                <h3>OTHER</h3>
+                <ul>
+                    <li><a href="#">⚙️ CODE EDITOR</a></li>
+                    <li><a href="#">📝 PAGE EDITOR</a></li>
+                    <li><a href="#">💬 DISCUSSIONS</a></li>
+                </ul>
+            </aside>
+    
+            <!-- Основное поле -->
+            <main class="content-area">
+                <table class="story-table">
+                    <tr>
+                        <!-- Левая колонка: Текст -->
+                        <td class="story-text-cell">
+                            <h2>WELCOME, STRANGER</h2>
+                            <p>Это базовая заготовка, имитирующая интерфейсы классических текстовых систем вроде <strong>MSPFA</strong> или старого <strong>Wikidot</strong>.</p>
+                        </td>
 
+                        <!-- Правая колонка: Изображение 200x200 -->
+                        <td class="story-image-cell">
+                            <img src="https://postimg.cc" alt="Penumbra Eye Logo" class="story-logo">
+                        </td>
+                    </tr>
+                </table>
+            </main>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 PENUMBRA EYE LIBRARY. Работает на GitHub Pages.</p>
+        </footer>
+    </div>
 </body>
 </html>
