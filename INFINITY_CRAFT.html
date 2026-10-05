@@ -284,12 +284,13 @@
 
         document.getElementById('reset-btn').addEventListener('click', () => {
             if (confirm("Сбросить весь прогресс?")) {
-            unlockedElements = [...BASE_ELEMENTS];
-            document.getElementById('craft-zone').innerHTML = '';
-            saveProgress();
-            renderSidebar();
+                unlockedElements = [...BASE_ELEMENTS];
+                document.getElementById('craft-zone').innerHTML = '';
+                saveProgress();
+                renderSidebar();
             }
         });
+
         // Окно авторизации
         const modal = document.getElementById('auth-modal');
         document.getElementById('auth-status-btn').addEventListener('click', () => {
@@ -314,7 +315,7 @@
             loadProgress();
             renderSidebar();
             modal.style.display = 'none';
-            alert(Вход выполнен: ${email});
+            alert(`Вход выполнен: ${email}`);
         });
         document.getElementById('google-btn').addEventListener('click', () => {
             const mockGoogleEmail = "google_user@gmail.com";
@@ -325,6 +326,10 @@
             modal.style.display = 'none';
             alert("Вход через Google успешно симулирован!");
         });
+
         // Запуск
         loadProgress();
         renderSidebar();
+    </script>
+</body>
+</html>
