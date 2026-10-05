@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elementum — Бесконечный Крафт</title>
+    <style>
+        :root {
+            --bg-color: #121214;
+            --sidebar-bg: #1a1a1e;
+            --text-color: #e1e1e6;
+            --accent-color: #4a90e2;
+            --border-color: #29292e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow: hidden;
+        }
+
+        /* Игровая зона */
+        #craft-zone {
+            flex: 1;
+            position: relative;
+            background-image: radial-gradient(var(--border-color) 1px, transparent 0);
+            background-size: 24px 24px;
+            overflow: hidden;
+        }
+
+        /* Боковая панель элементов */
+        #sidebar {
+            width: 320px;
+            background-color: var(--sidebar-bg);
+            border-left: 2px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .game-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        #element-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-content: flex-start;
+        }
+
+        /* Стили элементов */
+        .element {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 14px;
+            background: #202024;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .element:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .board-element {
+            position: absolute;
+            position: absolute;
+            z-index: 10;
+            touch-action: none;
+        }
+
+        /* Интерфейс управления */
+        .controls {
+            padding: 15px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            background-color: #29292e;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #38383f;
+        }
+
+        button.primary {
+            background-color: var(--accent-color);
+        }
+
+        button.primary:hover {
+            background-color: #357abd;
+        }
+
+        /* Модальное окно авторизации */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--sidebar-bg);
+            padding: 30px;
+            border-radius: 12px;
+            width: 360px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .modal-content h3 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .modal-content input {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: #121214;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Игровая доска -->
+    <div id="craft-zone"></div>
+
+    <!-- Боковое меню -->
+    <div id="sidebar">
+        <div class="panel-header">
+            <div class="game-title">🧪 Elementum</div>
+            <button id="auth-status-btn" onclick="openAuthModal()" style="max-width: fit-content; padding: 5px 10px; font-size: 0.8rem;">Войти</button>
+        </div>
+        
+        <!-- Список открытых элементов -->
+        <div id="element-list"></div>
+
+        <!-- Кнопки управления -->
+        <div class="controls">
+            <button onclick="clearBoard()">🧹 Очистить поле</button>
+            <button class="primary" onclick="resetProgress()">🔄 Сброс</button>
+        </div>
+    </div>
+
+    <!-- Окно авторизации -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <h3>Вход / Регистрация</h3>
+            <input type="email" id="auth-email" placeholder="Email">
+            <input type="password" id="auth-password" placeholder="Пароль">
+            <button class="primary" onclick="handleEmailAuth(true)">Зарегистрироваться</button>
+            <button onclick="handleEmailAuth(false)">Войти по Email</button>
+            <hr style="border-color: var(--border-color)">
+            <button onclick="handleGoogleAuth()" style="background: #db4437;">🔴 Войти через Google</button>
+            <button onclick="closeAuthModal()" style="background: transparent; color: #888;">Отмена</button>
+        </div>
+    </div>
+
+    <!-- Подключение Firebase (авторизация и база данных) -->
+    <script type="module">
+        import { initializeApp } from "https://gstatic.com";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://gstatic.com";
+        import { getFirestore, doc, setDoc, getDoc } from "https://gstatic.com";
+
+        // Замените эти данные на ваши из Firebase Console, чтобы сохранение работало в облаке
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Проверка: настроен ли Firebase пользователем
+        const isFirebaseConfigured = firebaseConfig.apiKey !== "YOUR_API_KEY";
+        let auth = null;
+        let db = null;
+        let currentUser = null;
+
+        if (isFirebaseConfigured) {
+            const app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    currentUser = user;
+                    document.getElementById('auth-status-btn').innerText = "Выйти";
+                    loadUserData();
+                } else {
+                    currentUser = null;
+                    document.getElementById('auth-status-btn').innerText = "Войти";
+                    renderSidebar();
+                }
+            });
+        }
+
+        // --- БАЗОВАЯ ЛОГИКА ИГРЫ ---
+        
+        // Базовые элементы
+        const BASE_ELEMENTS = [
+            { id: 'water', name: '💧 Вода' },
+            { id: 'fire', name: '🔥 Огонь' },
+            { id: 'earth', name: '🌱 Земля' },
+            { id: 'air', name: '💨 Воздух' }
+        ];
+
+        // Книга рецептов (СПОСОБЫ КРАФТА)
+        const RECIPES = {
+            'fire+water': { id: 'steam', name: '💨 Пар' },
+            'earth+water': { id: 'mud', name: '💩 Грязь' },
+            'air+fire': { id: 'energy', name: '⚡ Энергия' },
+            'earth+fire': { id: 'lava', name: '🌋 Лава' },
+            'air+earth': { id: 'dust', name: '⏳ Пыль' },
+            'lava+water': { id: 'stone', name: '🪨 Камень' },
+            'stone+fire': { id: 'metal', name: '🪙 Металл' },
+            'energy+metal': { id: 'electricity', name: '🔌 Электричество' }
+        };
+
+        // Состояние игры (открытые элементы у игрока)
+        let unlockedElements = [...BASE_ELEMENTS];
+
+        // Инициализация интерфейса
+        window.initGame = () => {
+            loadLocalProgress();
+            renderSidebar();
+        };
+
+        function renderSidebar() {
+            const list = document.getElementById('element-list');
+            list.innerHTML = '';
+            unlockedElements.forEach(el => {
+                const div = document.createElement('div');
+                div.className = 'element';
+                div.innerText = el.name;
+                div.onclick = (e) => spawnElement(el, e.clientX || 100, e.clientY || 100);
+                list.appendChild(div);
+            });
+        }
+
+        // Спавн элемента на игровую зону
+        function spawnElement(el, x, y) {
+            const zone = document.getElementById('craft-zone');
+            const div = document.createElement('div');
+            div.className = 'element board-element';
+            div.innerText = el.name;
+            div.dataset.id = el.id;
+            div.style.left = `${x - 50}px`;
+            div.style.top = `${y - 20}px`;
+
+            // Логика перетаскивания (Drag & Drop)
+            div.onmousedown = function(e) {
+                let shiftX = e.clientX - div.getBoundingClientRect().left;
+                let shiftY = e.clientY - div.getBoundingClientRect().top;
+
+                function moveAt(clientX, clientY) {
+                    div.style.left = clientX - shiftX + 'px';
