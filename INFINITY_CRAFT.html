@@ -91,7 +91,6 @@
 
         .board-element {
             position: absolute;
-            position: absolute;
             z-index: 10;
             touch-action: none;
         }
@@ -163,50 +162,47 @@
             color: white;
         }
     </style>
+
+    <!-- Подключаем Firebase через стандартные скрипты (совместимые со старым синтаксисом) -->
+    <script src="https://gstatic.com"></script>
+    <script src="https://gstatic.com"></script>
+    <script src="https://gstatic.com"></script>
 </head>
 <body>
 
-    <!-- Игровая доска -->
     <div id="craft-zone"></div>
 
-    <!-- Боковое меню -->
     <div id="sidebar">
         <div class="panel-header">
             <div class="game-title">🧪 Elementum</div>
-            <button id="auth-status-btn" onclick="openAuthModal()" style="max-width: fit-content; padding: 5px 10px; font-size: 0.8rem;">Войти</button>
+            <button id="auth-status-btn" style="max-width: fit-content; padding: 5px 10px; font-size: 0.8rem;">Войти</button>
         </div>
         
-        <!-- Список открытых элементов -->
         <div id="element-list"></div>
 
-        <!-- Кнопки управления -->
         <div class="controls">
-            <button onclick="clearBoard()">🧹 Очистить поле</button>
-            <button class="primary" onclick="resetProgress()">🔄 Сброс</button>
+            <button id="clear-btn">🧹 Очистить поле</button>
+            <button id="reset-btn" class="primary">🔄 Сброс</button>
         </div>
     </div>
 
-    <!-- Окно авторизации -->
     <div id="auth-modal" class="modal">
         <div class="modal-content">
             <h3>Вход / Регистрация</h3>
             <input type="email" id="auth-email" placeholder="Email">
             <input type="password" id="auth-password" placeholder="Пароль">
-            <button class="primary" onclick="handleEmailAuth(true)">Зарегистрироваться</button>
-            <button onclick="handleEmailAuth(false)">Войти по Email</button>
+            <button id="register-email-btn" class="primary">Зарегистрироваться</button>
+            <button id="login-email-btn">Войти по Email</button>
             <hr style="border-color: var(--border-color)">
-            <button onclick="handleGoogleAuth()" style="background: #db4437;">🔴 Войти через Google</button>
-            <button onclick="closeAuthModal()" style="background: transparent; color: #888;">Отмена</button>
+            <button id="google-auth-btn" style="background: #db4437;">🔴 Войти через Google</button>
+            <button id="close-modal-btn" style="background: transparent; color: #888;">Отмена</button>
         </div>
     </div>
 
-    <!-- Подключение Firebase (авторизация и база данных) -->
-    <script type="module">
-        import { initializeApp } from "https://gstatic.com";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://gstatic.com";
-        import { getFirestore, doc, setDoc, getDoc } from "https://gstatic.com";
-
-        // Замените эти данные на ваши из Firebase Console, чтобы сохранение работало в облаке
+    <script>
+        // --- НАСТРОЙКИ FIREBASE ---
+        // Если вы вставите сюда реальные ключи, включится облачное сохранение.
+        // Без них игра полноценно работает в режиме локального сохранения (LocalStorage).
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_AUTH_DOMAIN",
@@ -216,32 +212,11 @@
             appId: "YOUR_APP_ID"
         };
 
-        // Проверка: настроен ли Firebase пользователем
-        const isFirebaseConfigured = firebaseConfig.apiKey !== "YOUR_API_KEY";
+        const isFirebaseConfigured = firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY";
         let auth = null;
         let db = null;
         let currentUser = null;
 
-        if (isFirebaseConfigured) {
-            const app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-            
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    currentUser = user;
-                    document.getElementById('auth-status-btn').innerText = "Выйти";
-                    loadUserData();
-                } else {
-                    currentUser = null;
-                    document.getElementById('auth-status-btn').innerText = "Войти";
-                    renderSidebar();
-                }
-            });
-        }
-
-        // --- БАЗОВАЯ ЛОГИКА ИГРЫ ---
-        
         // Базовые элементы
         const BASE_ELEMENTS = [
             { id: 'water', name: '💧 Вода' },
@@ -250,7 +225,7 @@
             { id: 'air', name: '💨 Воздух' }
         ];
 
-        // Книга рецептов (СПОСОБЫ КРАФТА)
+        // Рецепты крафта
         const RECIPES = {
             'fire+water': { id: 'steam', name: '💨 Пар' },
             'earth+water': { id: 'mud', name: '💩 Грязь' },
@@ -262,15 +237,32 @@
             'energy+metal': { id: 'electricity', name: '🔌 Электричество' }
         };
 
-        // Состояние игры (открытые элементы у игрока)
         let unlockedElements = [...BASE_ELEMENTS];
 
-        // Инициализация интерфейса
-        window.initGame = () => {
-            loadLocalProgress();
-            renderSidebar();
-        };
+        // Инициализация Firebase (только если ключи валидны)
+        if (isFirebaseConfigured) {
+            try {
+                firebase.initializeApp(firebaseConfig);
+                auth = firebase.auth();
+                db = firebase.firestore();
+                
+                auth.onAuthStateChanged((user) => {
+                    if (user) {
+                        currentUser = user;
+                        document.getElementById('auth-status-btn').innerText = "Выйти";
+                        loadUserData();
+                    } else {
+                        currentUser = null;
+                        document.getElementById('auth-status-btn').innerText = "Войти";
+                        renderSidebar();
+                    }
+                });
+            } catch (e) {
+                console.error("Ошибка инициализации Firebase, переход на LocalStorage:", e);
+            }
+        }
 
+        // Рендеринг списка элементов в боковой панели
         function renderSidebar() {
             const list = document.getElementById('element-list');
             list.innerHTML = '';
@@ -278,50 +270,65 @@
                 const div = document.createElement('div');
                 div.className = 'element';
                 div.innerText = el.name;
-                div.onclick = (e) => spawnElement(el, e.clientX || 100, e.clientY || 100);
+                // Спавним элемент в случайном месте по центру экрана при клике
+                div.addEventListener('click', () => {
+                    const x = window.innerWidth / 2 - 100 + Math.random() * 50;
+                    const y = window.innerHeight / 2 - 50 + Math.random() * 50;
+                    spawnElement(el, x, y);
+                });
                 list.appendChild(div);
             });
         }
 
-        // Спавн элемента на игровую зону
+        // Создание элемента на поле
         function spawnElement(el, x, y) {
             const zone = document.getElementById('craft-zone');
             const div = document.createElement('div');
             div.className = 'element board-element';
             div.innerText = el.name;
             div.dataset.id = el.id;
-            div.style.left = `${x - 50}px`;
-            div.style.top = `${y - 20}px`;
+            div.style.left = x + 'px';
+            div.style.top = y + 'px';
 
-            // Логика перетаскивания (Drag & Drop)
-            div.onmousedown = function(e) {
+            // Drag and Drop логика
+            div.addEventListener('mousedown', function(e) {
                 let shiftX = e.clientX - div.getBoundingClientRect().left;
                 let shiftY = e.clientY - div.getBoundingClientRect().top;
 
                 function moveAt(clientX, clientY) {
                     div.style.left = clientX - shiftX + 'px';
-
-                    checkCollisions(div);
+                    div.style.top = clientY - shiftY + 'px';
+                }
+                function onMouseMove(e) {
+                moveAt(e.clientX, e.clientY);
+            }
+            document.addEventListener('mousemove', onMouseMove);
+            function onMouseUp() {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+                checkCollisions(div);
+            }
+            document.addEventListener('mouseup', onMouseUp);
+        });
+        div.ondragstart = () => false;
+        zone.appendChild(div);
+    }
+// Проверка пересечений
+    function checkCollisions(draggedEl) {
+        const zone = document.getElementById('craft-zone');
+        const elements = zone.getElementsByClassName('board-element');
+        const r1 = draggedEl.getBoundingClientRect();
+        for (let el of elements) {
+            if (el === draggedEl) continue;
+            const r2 = el.getBoundingClientRect();
+            // Если пересеклись
+            if (!(r1.right < r2.left || r1.left > r2.right || r1.bottom < r2.top || r1.top > r2.bottom)) {
+            combineElements(draggedEl, el);
+            break;
+        }
+    }
 }
-document.addEventListener('mouseup', onMouseUp);
-});
-div.ondragstart = () => false;
-zone.appendChild(div);
-}
-// Коллизии и крафт
-function checkCollisions(draggedEl) {
-const zone = document.getElementById('craft-zone');
-const elements = zone.getElementsByClassName('board-element');
-const r1 = draggedEl.getBoundingClientRect();
-for (let el of elements) {
-if (el === draggedEl) continue;
-const r2 = el.getBoundingClientRect();
-if (!(r1.right < r2.left || r1.left > r2.right || r1.bottom < r2.top || r1.top > r2.bottom)) {
-combineElements(draggedEl, el);
-break;
-}
-}
-}
+// Логика крафта
 function combineElements(el1, el2) {
 const id1 = el1.dataset.id;
 const id2 = el2.dataset.id;
@@ -329,11 +336,12 @@ const key1 = ${id1}+${id2};
 const key2 = ${id2}+${id1};
 const recipe = RECIPES[key1] || RECIPES[key2];
 if (recipe) {
-const x = parseFloat(el2.style.left) + 50;
-const y = parseFloat(el2.style.top) + 20;
+const x = parseFloat(el2.style.left);
+const y = parseFloat(el2.style.top);
 el1.remove();
 el2.remove();
 spawnElement(recipe, x, y);
+// Если открыли новый элемент
 if (!unlockedElements.some(e => e.id === recipe.id)) {
 unlockedElements.push(recipe);
 renderSidebar();
@@ -341,85 +349,90 @@ saveProgress();
 }
 }
 }
-// Кнопки управления
+// Управление кнопками интерфейса
 document.getElementById('clear-btn').addEventListener('click', () => {
 document.getElementById('craft-zone').innerHTML = '';
 });
 document.getElementById('reset-btn').addEventListener('click', () => {
-if (confirm("Сбросить весь прогресс до базовых элементов?")) {
+if (confirm("Сбросить весь прогресс до 4-х базовых элементов?")) {
 unlockedElements = [...BASE_ELEMENTS];
 document.getElementById('craft-zone').innerHTML = '';
 renderSidebar();
 saveProgress();
 }
 });
-// Сохранение и загрузка прогресса
+// Сохранение прогресса
 function saveProgress() {
 localStorage.setItem('elementum_progress', JSON.stringify(unlockedElements));
 if (currentUser && isFirebaseConfigured) {
-setDoc(doc(db, "users", currentUser.uid), { progress: unlockedElements });
+db.collection("users").doc(currentUser.uid).set({ progress: unlockedElements });
 }
 }
 function loadLocalProgress() {
 const local = localStorage.getItem('elementum_progress');
-if (local) unlockedElements = JSON.parse(local);
+if (local) {
+unlockedElements = JSON.parse(local);
 }
-async function loadUserData() {
+}
+function loadUserData() {
 if (!isFirebaseConfigured) return;
-const docRef = doc(db, "users", currentUser.uid);
-const docSnap = await getDoc(docRef);
-if (docSnap.exists()) {
-unlockedElements = docSnap.data().progress;
+db.collection("users").doc(currentUser.uid).get().then((doc) => {
+if (doc.exists) {
+unlockedElements = doc.data().progress;
 renderSidebar();
 }
+});
 }
 // Логика работы модального окна авторизации
 const authModal = document.getElementById('auth-modal');
 document.getElementById('auth-status-btn').addEventListener('click', () => {
-if (currentUser && isFirebaseConfigured) {
-signOut(auth).then(() => alert("Вы вышли из системы. Прогресс сохранен локально."));
+if (currentUser) {
+const targetAuth = isFirebaseConfigured ? auth.signOut() : Promise.resolve();
+targetAuth.then(() => {
+currentUser = null;
+document.getElementById('auth-status-btn').innerText = "Войти";
+alert("Вы вышли из системы.");
+});
 } else if (!isFirebaseConfigured) {
-alert("Развертывание без Firebase: Логин симулируется локально.");
-const mockEmail = prompt("Введите любой e-mail:");
+// Имитация входа для локальной работы
+const mockEmail = prompt("Локальный режим: Введите любое имя или e-mail для симуляции входа:");
 if (mockEmail) {
 currentUser = { uid: mockEmail };
-document.getElementById('auth-status-btn').innerText = "Выйти";
+document.getElementById('auth-status-btn').innerText = "Выйти (" + mockEmail + ")";
+alert("Успешный локальный вход! Прогресс по-прежнему сохраняется в вашем браузере.");
 }
 } else {
 authModal.style.display = 'flex';
 }
 });
 document.getElementById('close-modal-btn').addEventListener('click', () => authModal.style.display = 'none');
-async function handleAuth(isRegister) {
+// Обработчики Firebase авторизации (сработают только при указании ключей)
+document.getElementById('register-email-btn').addEventListener('click', () => {
 const email = document.getElementById('auth-email').value;
 const password = document.getElementById('auth-password').value;
-if (!email || !password) return alert("Заполните поля!");
-try {
-if (isRegister) {
-await createUserWithEmailAndPassword(auth, email, password);
-alert("Регистрация успешна!");
-} else {
-await signInWithEmailAndPassword(auth, email, password);
-}
-authModal.style.display = 'none';
-} catch (err) {
-alert("Ошибка: " + err.message);
-}
-}
-document.getElementById('register-email-btn').addEventListener('click', () => handleAuth(true));
-document.getElementById('login-email-btn').addEventListener('click', () => handleAuth(false));
-document.getElementById('google-auth-btn').addEventListener('click', async () => {
-const provider = new GoogleAuthProvider();
-try {
-await signInWithPopup(auth, provider);
-authModal.style.display = 'none';
-} catch (err) {
-alert("Ошибка Google: " + err.message);
-}
+if (!isFirebaseConfigured) return alert("Firebase не настроен!");
+auth.createUserWithEmailAndPassword(email, password)
+.then(() => { alert("Регистрация успешна!"); authModal.style.display = 'none'; })
+.catch(err => alert("Ошибка: " + err.message));
 });
-// Старт игры
+document.getElementById('login-email-btn').addEventListener('click', () => {
+const email = document.getElementById('auth-email').value;
+const password = document.getElementById('auth-password').value;
+if (!isFirebaseConfigured) return alert("Firebase не настроен!");
+auth.signInWithEmailAndPassword(email, password)
+.then(() => { authModal.style.display = 'none'; })
+.catch(err => alert("Ошибка: " + err.message));
+});
+document.getElementById('google-auth-btn').addEventListener('click', () => {
+if (!isFirebaseConfigured) return alert("Firebase не настроен!");
+const provider = new firebase.auth.GoogleAuthProvider();
+auth.signInWithPopup(provider)
+.then(() => { authModal.style.display = 'none'; })
+.catch(err => alert("Ошибка: " + err.message));
+});
+// Запуск игры при загрузке страницы
+window.onload = () => {
 loadLocalProgress();
 renderSidebar();
-
-
+};
 
