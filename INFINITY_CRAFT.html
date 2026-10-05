@@ -300,3 +300,126 @@
 
                 function moveAt(clientX, clientY) {
                     div.style.left = clientX - shiftX + 'px';
+
+                    checkCollisions(div);
+}
+document.addEventListener('mouseup', onMouseUp);
+});
+div.ondragstart = () => false;
+zone.appendChild(div);
+}
+// Коллизии и крафт
+function checkCollisions(draggedEl) {
+const zone = document.getElementById('craft-zone');
+const elements = zone.getElementsByClassName('board-element');
+const r1 = draggedEl.getBoundingClientRect();
+for (let el of elements) {
+if (el === draggedEl) continue;
+const r2 = el.getBoundingClientRect();
+if (!(r1.right < r2.left || r1.left > r2.right || r1.bottom < r2.top || r1.top > r2.bottom)) {
+combineElements(draggedEl, el);
+break;
+}
+}
+}
+function combineElements(el1, el2) {
+const id1 = el1.dataset.id;
+const id2 = el2.dataset.id;
+const key1 = ${id1}+${id2};
+const key2 = ${id2}+${id1};
+const recipe = RECIPES[key1] || RECIPES[key2];
+if (recipe) {
+const x = parseFloat(el2.style.left) + 50;
+const y = parseFloat(el2.style.top) + 20;
+el1.remove();
+el2.remove();
+spawnElement(recipe, x, y);
+if (!unlockedElements.some(e => e.id === recipe.id)) {
+unlockedElements.push(recipe);
+renderSidebar();
+saveProgress();
+}
+}
+}
+// Кнопки управления
+document.getElementById('clear-btn').addEventListener('click', () => {
+document.getElementById('craft-zone').innerHTML = '';
+});
+document.getElementById('reset-btn').addEventListener('click', () => {
+if (confirm("Сбросить весь прогресс до базовых элементов?")) {
+unlockedElements = [...BASE_ELEMENTS];
+document.getElementById('craft-zone').innerHTML = '';
+renderSidebar();
+saveProgress();
+}
+});
+// Сохранение и загрузка прогресса
+function saveProgress() {
+localStorage.setItem('elementum_progress', JSON.stringify(unlockedElements));
+if (currentUser && isFirebaseConfigured) {
+setDoc(doc(db, "users", currentUser.uid), { progress: unlockedElements });
+}
+}
+function loadLocalProgress() {
+const local = localStorage.getItem('elementum_progress');
+if (local) unlockedElements = JSON.parse(local);
+}
+async function loadUserData() {
+if (!isFirebaseConfigured) return;
+const docRef = doc(db, "users", currentUser.uid);
+const docSnap = await getDoc(docRef);
+if (docSnap.exists()) {
+unlockedElements = docSnap.data().progress;
+renderSidebar();
+}
+}
+// Логика работы модального окна авторизации
+const authModal = document.getElementById('auth-modal');
+document.getElementById('auth-status-btn').addEventListener('click', () => {
+if (currentUser && isFirebaseConfigured) {
+signOut(auth).then(() => alert("Вы вышли из системы. Прогресс сохранен локально."));
+} else if (!isFirebaseConfigured) {
+alert("Развертывание без Firebase: Логин симулируется локально.");
+const mockEmail = prompt("Введите любой e-mail:");
+if (mockEmail) {
+currentUser = { uid: mockEmail };
+document.getElementById('auth-status-btn').innerText = "Выйти";
+}
+} else {
+authModal.style.display = 'flex';
+}
+});
+document.getElementById('close-modal-btn').addEventListener('click', () => authModal.style.display = 'none');
+async function handleAuth(isRegister) {
+const email = document.getElementById('auth-email').value;
+const password = document.getElementById('auth-password').value;
+if (!email || !password) return alert("Заполните поля!");
+try {
+if (isRegister) {
+await createUserWithEmailAndPassword(auth, email, password);
+alert("Регистрация успешна!");
+} else {
+await signInWithEmailAndPassword(auth, email, password);
+}
+authModal.style.display = 'none';
+} catch (err) {
+alert("Ошибка: " + err.message);
+}
+}
+document.getElementById('register-email-btn').addEventListener('click', () => handleAuth(true));
+document.getElementById('login-email-btn').addEventListener('click', () => handleAuth(false));
+document.getElementById('google-auth-btn').addEventListener('click', async () => {
+const provider = new GoogleAuthProvider();
+try {
+await signInWithPopup(auth, provider);
+authModal.style.display = 'none';
+} catch (err) {
+alert("Ошибка Google: " + err.message);
+}
+});
+// Старт игры
+loadLocalProgress();
+renderSidebar();
+
+
+
