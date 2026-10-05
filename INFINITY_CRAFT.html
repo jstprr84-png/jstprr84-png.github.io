@@ -158,21 +158,45 @@
 
     <script>
         const BASE_ELEMENTS = [
-            { id: 'water', name: '💧 Вода' },
-            { id: 'fire', name: '🔥 Огонь' },
-            { id: 'earth', name: '🌱 Земля' },
+            { id: 'water', name: '💧 Water' },
+            { id: 'fire', name: '🔥 Fire' },
+            { id: 'earth', name: '🌱 Earth' },
             { id: 'air', name: '💨 Воздух' }
         ];
 
         const RECIPES = {
-            'fire+water': { id: 'steam', name: '💨 Пар' },
-            'earth+water': { id: 'mud', name: '💩 Грязь' },
-            'air+fire': { id: 'energy', name: '⚡ Энергия' },
-            'earth+fire': { id: 'lava', name: '🌋 Лава' },
-            'air+earth': { id: 'dust', name: '⏳ Пыль' },
-            'lava+water': { id: 'stone', name: '🪨 Камень' },
-            'stone+fire': { id: 'metal', name: '🪙 Металл' },
-            'energy+metal': { id: 'electricity', name: '🔌 Электричество' }
+            //gen 1
+            'fire+water': { id: 'steam', name: '💨 Steam' },
+            'earth+water': { id: 'mud', name: '💩 Mud' },
+            'air+fire': { id: 'energy', name: '⚡ Energy' },
+            'earth+fire': { id: 'lava', name: '🌋 Lava' },
+            'air+earth': { id: 'dust', name: '⏳ Dust' },
+            'lava+water': { id: 'stone', name: '🪨 Stone' },
+            'stone+fire': { id: 'metal', name: '🪙 Metal' },
+            'energy+metal': { id: 'electricity', name: '🔌 Electricity' },
+            'air+water': { id: 'rain', name: '🌧️ Rain' },
+
+            
+            //gen 2
+            'steam+water': { id: 'puddle', name: '🫗 Puddle' },
+            'mud+water': { id: 'swamp', name: '🐍 Swamp' },
+            'energy+water': { id: 'shortcircuit', name: '⚡ Short circuit' },
+            'dust+water': { id: 'ceramics', name: '⚱️ Ceramics' },
+            'stone+water': { id: 'sand', name: '🏖️ Sand' },
+            'metal+water': { id: 'rust', name: '🪙 Rust' },
+            'electricity+water': { id: 'battery', name: '🔋 Battery' },
+            'rain+water': { id: 'rain', name: '🌧️ Rain' },
+            'water+water': { id: 'river', name: '🚣 River' },
+
+            'steam+fire': { id: 'smoke', name: '💨 Smoke' },
+            'mud+fire': { id: 'ceramics', name: '⚱️ Ceramics' },
+            'energy+fire': { id: 'light', name: '💡 Light' },
+            'lava+fire': { id: 'magma', name: '🌋 Magma' },
+            'dust+fire': { id: 'powder', name: '⏳ Powder' },
+            'stone+fire': { id: 'metal', name: '🪙 Metal' },
+            'electricity+fire': { id: 'laser', name: '🚨 Laser' }
+            'rain+fire': { id: 'steam', name: '💨 Steam' },
+            'fire+fire': { id: 'sun', name: '☀️ Sun' }
         };
 
         let unlockedElements = [...BASE_ELEMENTS];
