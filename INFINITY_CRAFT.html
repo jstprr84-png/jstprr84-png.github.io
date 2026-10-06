@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinity Craft Remake</title>
+    <style>
+        :root {
+            --bg-color: #121214;
+            --sidebar-bg: #1a1a1e;
+            --text-color: #e1e1e6;
+            --accent-color: #4a90e2;
+            --border-color: #29292e;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            user-select: none;
+        }
+        body {
+            display: flex;
+            height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow: hidden;
+        }
+        #craft-zone {
+            flex: 1;
+            position: relative;
+            background-image: radial-gradient(var(--border-color) 1px, transparent 0);
+            background-size: 24px 24px;
+            overflow: hidden;
+        }
+        #sidebar {
+            width: 300px;
+            background-color: var(--sidebar-bg);
+            border-left: 2px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+        .panel-header {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .game-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+        #element-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-content: flex-start;
+        }
+        .element {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 14px;
+            background: #202024;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .element:hover {
+            border-color: var(--accent-color);
+        }
+        .board-element {
+            position: absolute;
+            z-index: 10;
+            touch-action: none;
+        }
+        .controls {
+            padding: 15px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            background-color: #29292e;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        button:hover {
+            background-color: #38383f;
+        }
+        button.primary {
+            background-color: var(--accent-color);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: var(--sidebar-bg);
+            padding: 25px;
+            border-radius: 12px;
+            width: 320px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .modal-content input {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: #121214;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="craft-zone"></div>
+
+    <div id="sidebar">
+        <div class="panel-header">
+            <div class="game-title">🧪 Elementum</div>
+            <button id="auth-status-btn" style="max-width: max-content; padding: 5px 10px; font-size: 0.8rem;">Войти</button>
+        </div>
+        <div id="element-list"></div>
+        <div class="controls">
+            <button id="clear-btn">🧹 Очистить</button>
+            <button id="reset-btn" class="primary">🔄 Сброс</button>
+        </div>
+    </div>
+
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <h3 style="text-align: center;">Вход в аккаунт</h3>
+            <input type="email" id="auth-email" placeholder="Email / Почта">
+            <input type="password" id="auth-password" placeholder="Пароль">
+            <button id="email-btn" class="primary">Войти / Создать аккаунт</button>
+            <button id="google-btn" style="background: #db4437;">🔴 Войти через Google</button>
+            <button id="close-btn" style="background: transparent; color: #888;">Отмена</button>
+        </div>
+    </div>
+
+    <script>
+        const BASE_ELEMENTS = [
+            { id: 'water', name: '💧 Water' },
+            { id: 'fire', name: '🔥 Fire' },
+            { id: 'earth', name: '🌱 Earth' },
+            { id: 'air', name: '💨 Air' }
+        ];
+
+        const RECIPES = {
+            //gen 1
+            'fire+water': { id: 'steam', name: '💨 Steam' },
+            'earth+water': { id: 'mud', name: '💩 Mud' },
+            'air+fire': { id: 'energy', name: '⚡ Energy' },
+            'earth+fire': { id: 'lava', name: '🌋 Lava' },
+            'air+earth': { id: 'dust', name: '⏳ Dust' },
+            'lava+water': { id: 'stone', name: '🪨 Stone' },
+            'stone+fire': { id: 'metal', name: '🪙 Metal' },
+            'energy+metal': { id: 'electricity', name: '🔌 Electricity' },
+            'air+water': { id: 'rain', name: '🌧️ Rain' },
+
+            
+            //gen 2
+            'steam+water': { id: 'puddle', name: '🫗 Puddle' },
+            'mud+water': { id: 'swamp', name: '🐍 Swamp' },
+            'energy+water': { id: 'shortcircuit', name: '⚡ Short circuit' },
+            'dust+water': { id: 'ceramics', name: '⚱️ Ceramics' },
+            'stone+water': { id: 'sand', name: '🏖️ Sand' },
+            'metal+water': { id: 'rust', name: '🪙 Rust' },
+            'electricity+water': { id: 'battery', name: '🔋 Battery' },
+            'rain+water': { id: 'rain', name: '🌧️ Rain' },
+            'water+water': { id: 'river', name: '🚣 River' },
+
+            'steam+fire': { id: 'smoke', name: '💨 Smoke' },
+            'mud+fire': { id: 'ceramics', name: '⚱️ Ceramics' },
+            'energy+fire': { id: 'light', name: '💡 Light' },
+            'lava+fire': { id: 'magma', name: '🌋 Magma' },
+            'dust+fire': { id: 'powder', name: '⏳ Powder' },
+            'stone+fire': { id: 'metal', name: '🪙 Metal' },
+            'electricity+fire': { id: 'laser', name: '🚨 Laser' },
+            'rain+fire': { id: 'steam', name: '💨 Steam' },
+            'fire+fire': { id: 'sun', name: '☀️ Sun' },
+
+            'steam+earth': { id: 'geyser', name: '💨💧 Geyser' },
+            'mud+earth': { id: 'hive', name: '🪲 Hive' },
+            'energy+earth': { id: 'life', name: '🌿 Life' },
+            'lava+earth': { id: 'volcano', name: '🌋 Volcano' },
+            'dust+earth': { id: 'sand', name: '🏖️ Sand' },
+            'stone+earth': { id: 'mountain', name: '⛰️ Mountain' },
+            'earth+electricity': { id: 'magnet', name: '🧲 Magnet' },
+            'rain+earth': { id: 'mud', name: '💩 Mud' },
+            'earth+earth': { id: 'hill', name: '⛰️ Hill' },
+
+            'air+steam': { id: 'fog', name: '🌫️ Fog' },
+            'mud+air': { id: 'dust', name: '⏳ Dust' },
+            'air+energy': { id: 'wind', name: '🌪️ Wind' },
+            'lava+air': { id: 'obsidian', name: '🔮 Obsidian' },
+            'dust+air': { id: 'sandstorm', name: '🌪️ Sandstorm' },
+            'stone+air': { id: 'echo', name: '🔊 Echo' },
+            'electricity+air': { id: 'lightning', name: '⚡ Lightning' },
+            'rain+air': { id: 'rain', name: '🌧️ Rain' },
+            'air+air': { id: 'atmosphere', name: '🌍 Atmosphere' }
+        };
+
+        let unlockedElements = [...BASE_ELEMENTS];
+        let currentAccount = localStorage.getItem('active_user') || null;
+
+        function renderSidebar() {
+            const list = document.getElementById('element-list');
+            list.innerHTML = '';
+            unlockedElements.forEach(el => {
+                const div = document.createElement('div');
+                div.className = 'element';
+                div.innerText = el.name;
+                div.addEventListener('click', () => {
+                    const x = window.innerWidth / 3 + Math.random() * 100;
+                    const y = window.innerHeight / 3 + Math.random() * 100;
+                    spawnElement(el, x, y);
+                });
+                list.appendChild(div);
+            });
+            updateAuthButton();
+        }
+
+        function spawnElement(el, x, y) {
+            const zone = document.getElementById('craft-zone');
+            const div = document.createElement('div');
+            div.className = 'element board-element';
+            div.innerText = el.name;
+            div.dataset.id = el.id;
+            div.style.left = x + 'px';
+            div.style.top = y + 'px';
+
+            div.addEventListener('mousedown', function(e) {
+                let shiftX = e.clientX - div.getBoundingClientRect().left;
+                let shiftY = e.clientY - div.getBoundingClientRect().top;
+
+                function moveAt(clientX, clientY) {
+                    div.style.left = clientX - shiftX + 'px';
+                    div.style.top = clientY - shiftY + 'px';
+                }
+                function onMouseMove(e) { moveAt(e.clientX, e.clientY); }
+                document.addEventListener('mousemove', onMouseMove);
+
+                document.addEventListener('mouseup', function onMouseUp() {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                    checkCollisions(div);
+                });
+            });
+            zone.appendChild(div);
+        }
+
+        function checkCollisions(draggedEl) {
+            const elements = document.getElementsByClassName('board-element');
+            const r1 = draggedEl.getBoundingClientRect();
+
+            for (let el of elements) {
+                if (el === draggedEl) continue;
+                const r2 = el.getBoundingClientRect();
+
+                if (!(r1.right < r2.left || r1.left > r2.right || r1.bottom < r2.top || r1.top > r2.bottom)) {
+                    combineElements(draggedEl, el);
+                    break;
+                }
+            }
+        }
+
+        function combineElements(el1, el2) {
+            const id1 = el1.dataset.id;
+            const id2 = el2.dataset.id;
+            const key1 = `${id1}+${id2}`;
+            const key2 = `${id2}+${id1}`;
+            const recipe = RECIPES[key1] || RECIPES[key2];
+
+            if (recipe) {
+                const x = parseFloat(el2.style.left);
+                const y = parseFloat(el2.style.top);
+                el1.remove();
+                el2.remove();
+                spawnElement(recipe, x, y);
+
+                if (!unlockedElements.some(e => e.id === recipe.id)) {
+                    unlockedElements.push(recipe);
+                    renderSidebar();
+                    saveProgress();
+                }
+            }
+        }
+
+        function saveProgress() {
+            const key = currentAccount ? `progress_${currentAccount}` : 'guest_progress';
+            localStorage.setItem(key, JSON.stringify(unlockedElements));
+        }
+
+        function loadProgress() {
+            const key = currentAccount ? `progress_${currentAccount}` : 'guest_progress';
+            const saved = localStorage.getItem(key);
+            unlockedElements = saved ? JSON.parse(saved) : [...BASE_ELEMENTS];
+        }
+
+        function updateAuthButton() {
+            const btn = document.getElementById('auth-status-btn');
+            btn.innerText = currentAccount ? 'Выйти' : 'Войти';
+        }
+
+        // Кнопки интерфейса
+        document.getElementById('clear-btn').addEventListener('click', () => {
+            document.getElementById('craft-zone').innerHTML = '';
+        });
+
+        document.getElementById('reset-btn').addEventListener('click', () => {
+            if (confirm("Сбросить весь прогресс?")) {
+                unlockedElements = [...BASE_ELEMENTS];
+                document.getElementById('craft-zone').innerHTML = '';
+                saveProgress();
+                renderSidebar();
+            }
+        });
+
+        // Окно авторизации
+        const modal = document.getElementById('auth-modal');
+        document.getElementById('auth-status-btn').addEventListener('click', () => {
+            if (currentAccount) {
+                if (confirm("Выйти из аккаунта?")) {
+                    currentAccount = null;
+                    localStorage.removeItem('active_user');
+                    loadProgress();
+                    renderSidebar();
+                }
+            } else {
+                modal.style.display = 'flex';
+            }
+        });
+        document.getElementById('close-btn').addEventListener('click', () => modal.style.display = 'none');
+        document.getElementById('email-btn').addEventListener('click', () => {
+            const email = document.getElementById('auth-email').value.trim();
+            const pass = document.getElementById('auth-password').value;
+            if (!email || !pass) return alert("Введите почту и пароль!");
+            currentAccount = email;
+            localStorage.setItem('active_user', email);
+            loadProgress();
+            renderSidebar();
+            modal.style.display = 'none';
+            alert(`Вход выполнен: ${email}`);
+        });
+        document.getElementById('google-btn').addEventListener('click', () => {
+            const mockGoogleEmail = "google_user@gmail.com";
+            currentAccount = mockGoogleEmail;
+            localStorage.setItem('active_user', mockGoogleEmail);
+            loadProgress();
+            renderSidebar();
+            modal.style.display = 'none';
+            alert("Вход через Google успешно симулирован!");
+        });
+
+        //Запуск
+        loadProgress();
+        renderSidebar();
+    </script>
+</body>
+</html>
