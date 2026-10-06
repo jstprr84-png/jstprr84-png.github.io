@@ -193,7 +193,7 @@
             'energy+fire': { id: 'light', name: '💡 Light' },
             'lava+fire': { id: 'magma', name: '🌋 Magma' },
             'dust+fire': { id: 'powder', name: '⏳ Powder' },
-            'stone+fire': { id: 'metal', name: '🪙 Metal' },
+            'metal+fire': { id: 'steel', name: '⚔️ Steel' },
             'electricity+fire': { id: 'laser', name: '🚨 Laser' },
             'rain+fire': { id: 'steam', name: '💨 Steam' },
             'fire+fire': { id: 'sun', name: '☀️ Sun' },
@@ -204,6 +204,7 @@
             'lava+earth': { id: 'volcano', name: '🌋 Volcano' },
             'dust+earth': { id: 'sand', name: '🏖️ Sand' },
             'stone+earth': { id: 'mountain', name: '⛰️ Mountain' },
+            'metal+earth': { id: 'ore', name: '⛏️ Ore' },
             'earth+electricity': { id: 'magnet', name: '🧲 Magnet' },
             'rain+earth': { id: 'mud', name: '💩 Mud' },
             'earth+earth': { id: 'hill', name: '⛰️ Hill' },
@@ -214,9 +215,64 @@
             'lava+air': { id: 'obsidian', name: '🔮 Obsidian' },
             'dust+air': { id: 'sandstorm', name: '🌪️ Sandstorm' },
             'stone+air': { id: 'echo', name: '🔊 Echo' },
+            'metal+air': { id: 'sound', name: '🔔 Sound' },
             'electricity+air': { id: 'lightning', name: '⚡ Lightning' },
             'rain+air': { id: 'rain', name: '🌧️ Rain' },
-            'air+air': { id: 'atmosphere', name: '🌍 Atmosphere' }
+            'air+air': { id: 'atmosphere', name: '🌍 Atmosphere' },
+
+            'energy+steam': { id: 'engine', name: '💨🚂 Engine' },
+            'lava+steam': { id: 'obsidian', name: '🔮 Obsidian' },
+            'dust+steam': { id: 'cloud', name: '☁️ Cloud' },
+            'stone+steam': { id: 'geyser', name: '💨💧 Geyser' },
+            'metal+steam': { id: 'engine', name: '💨🚂 Engine' },
+            'electricity+steam': { id: 'engine', name: '💨🚂 Engine' },
+            'rain+steam': { id: 'cloud', name: '☁️ Cloud' },
+            'steam+steam': { id: 'pressure', name: '💥 Pressure' },
+
+            'steam+mud': { id: 'geyser', name: '💨💧 Geyser' },
+            'energy+mud': { id: 'life', name: '🌿 Life' },
+            'lava+mud': { id: 'stone', name: '🪨 Stone' },
+            'dust+mud': { id: 'dust', name: '⏳ Dust' },
+            'stone+mud': { id: 'ceramics', name: '⚱️ Ceramics' },
+            'metal+mud': { id: 'ironore', name: '🪨 Iron ore' },
+            'electricity+mud': { id: 'electrolyte', name: '🧪 Electrolyte' },
+            'rain+mud': { id: 'swamp', name: '🐍 Swamp' },
+            'mud+mud': { id: 'swamp', name: '🐍 Swamp' },
+
+            'lava+energy': { id: 'eruption', name: '💥 Eruption' },
+            'dust+energy': { id: 'sandstorm', name: '🌪️ Sandstorm' },
+            'stone+energy': { id: 'crystal', name: '💎 Crystal' },
+            'metal+energy': { id: 'magnet', name: '🧲 Magnet' },
+            'electricity+energy': { id: 'lightning', name: '⚡ Lightning' },
+            'rain+energy': { id: 'flood', name: '🌊 Flood' },
+            'energy+energy': { id: 'blackhole', name: '🕳️ Black Hole' },
+            
+            'dust+lava': { id: 'ash', name: '🌫️ Ash' },
+            'stone+lava': { id: 'obsidian', name: '🔮 Obsidian' },
+            'metal+lava': { id: 'steel', name: '⚔️ Steel' },
+            'electricity+lava': { id: 'plasma', name: '☀️ Plasma' },
+            'rain+lava': { id: 'stone', name: '🪨 Stone' },
+            'lava+lava': { id: 'magma', name: '🌋 Magma' },
+
+            'stone+dust': { id: 'sand', name: '🏖️ Sand' },
+            'metal+dust': { id: 'rust', name: '🪙 Rust' },
+            'electricity+dust': { id: 'spark', name: '💥 Spark' },
+            'rain+dust': { id: 'mud', name: '💩 Mud' },
+            'dust+dust': { id: 'sandstorm', name: '🌪️ Sandstorm' },
+            
+            'metal+stone': { id: 'anvil', name: '🔨 Anvil' },
+            'electricity+stone': { id: 'silicon', name: '💾 Silicon' },
+            'rain+stone': { id: 'pebble', name: '🪨 Pebble' },
+            'stone+stone': { id: 'mountain', name: '⛰️ Mountain' },
+            
+            'electricity+metal': { id: 'wire', name: '🔌 Wire' },
+            'rain+metal': { id: 'rust', name: '🪙 Rust' },
+            'rain+rain': { id: 'steel', name: '⚔️ Steel' },
+
+            'rain+electricity': { id: 'shortcircuit', name: '⚡ Short circuit' },
+            'electricity+electricity': { id: 'lightning', name: '⚡ Lightning' },
+
+            'electricity+electricity': { id: 'storm', name: '⛈️ Storm' }
         };
 
         let unlockedElements = [...BASE_ELEMENTS];
